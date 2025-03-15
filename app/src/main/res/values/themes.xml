@@ -1,0 +1,69 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.RaveChat" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Customize your light theme here. -->
+        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+
+        <item name="colorPrimary">@color/light_theme_primary</item>
+        <item name="colorOnPrimary">@color/light_theme_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/light_theme_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/light_theme_onPrimaryContainer</item>
+        <item name="colorSecondary">@color/light_theme_secondary</item>
+        <item name="colorOnSecondary">@color/light_theme_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/light_theme_secondaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/light_theme_onSecondaryContainer</item>
+        <item name="colorTertiary">@color/light_theme_tertiary</item>
+        <item name="colorOnTertiary">@color/light_theme_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/light_theme_tertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/light_theme_onTertiaryContainer</item>
+        <item name="colorError">@color/light_theme_error</item>
+        <item name="colorOnError">@color/light_theme_onError</item>
+        <item name="colorErrorContainer">@color/light_theme_errorContainer</item>
+        <item name="colorOnErrorContainer">@color/light_theme_onErrorContainer</item>
+        <item name="android:colorBackground">@color/light_theme_background</item>
+        <item name="colorOnBackground">@color/light_theme_onBackground</item>
+        <item name="colorSurface">@color/light_theme_surface</item>
+        <item name="colorOnSurface">@color/light_theme_onSurface</item>
+        <item name="colorSurfaceVariant">@color/light_theme_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/light_theme_onSurfaceVariant</item>
+        <item name="colorOutline">@color/light_theme_outline</item>
+        <item name="colorOutlineVariant">@color/light_theme_outlineVariant</item>
+        <item name="colorSurfaceInverse">@color/light_theme_inverseSurface</item>
+        <item name="colorOnSurfaceInverse">@color/light_theme_inverseOnSurface</item>
+        <item name="colorPrimaryInverse">@color/light_theme_inversePrimary</item>
+        <item name="colorPrimaryFixed">@color/light_theme_primaryFixed</item>
+        <item name="colorOnPrimaryFixed">@color/light_theme_onPrimaryFixed</item>
+        <item name="colorPrimaryFixedDim">@color/light_theme_primaryFixedDim</item>
+        <item name="colorOnPrimaryFixedVariant">@color/light_theme_onPrimaryFixedVariant</item>
+        <item name="colorSecondaryFixed">@color/light_theme_secondaryFixed</item>
+        <item name="colorOnSecondaryFixed">@color/light_theme_onSecondaryFixed</item>
+        <item name="colorSecondaryFixedDim">@color/light_theme_secondaryFixedDim</item>
+        <item name="colorOnSecondaryFixedVariant">@color/light_theme_onSecondaryFixedVariant</item>
+        <item name="colorTertiaryFixed">@color/light_theme_tertiaryFixed</item>
+        <item name="colorOnTertiaryFixed">@color/light_theme_onTertiaryFixed</item>
+        <item name="colorTertiaryFixedDim">@color/light_theme_tertiaryFixedDim</item>
+        <item name="colorOnTertiaryFixedVariant">@color/light_theme_onTertiaryFixedVariant</item>
+        <item name="colorSurfaceDim">@color/light_theme_surfaceDim</item>
+        <item name="colorSurfaceBright">@color/light_theme_surfaceBright</item>
+        <item name="colorSurfaceContainerLowest">@color/light_theme_surfaceContainerLowest</item>
+        <item name="colorSurfaceContainerLow">@color/light_theme_surfaceContainerLow</item>
+        <item name="colorSurfaceContainer">@color/light_theme_surfaceContainer</item>
+        <item name="colorSurfaceContainerHigh">@color/light_theme_surfaceContainerHigh</item>
+        <item name="colorSurfaceContainerHighest">@color/light_theme_surfaceContainerHighest</item>
+
+        <item name="fontFamily">@font/my_fonts</item>
+        <item name="android:fontFamily">@font/my_fonts</item>
+
+    </style>
+
+    <style name="Widget.App.Toolbar" parent="Widget.Material3.Toolbar">
+        <item name="titleTextAppearance">@style/TextAppearance.App.TitleLarge</item>
+    </style>
+
+    <style name="TextAppearance.App.TitleLarge" parent="TextAppearance.Material3.TitleLarge">
+        <item name="android:textStyle">bold</item>
+        <item name="font">@font/open_sans_regular</item>
+    </style>
+
+    <style name="Theme.RaveChat" parent="Base.Theme.RaveChat" />
+</resources>

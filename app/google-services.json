@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "29756972660",
+    "project_id": "ravechat-ef4ca",
+    "storage_bucket": "ravechat-ef4ca.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:29756972660:android:8ef982d255f275dd17fb21",
+        "android_client_info": {
+          "package_name": "com.ravemaster.ravechat"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD8hGglFytgFXJGcp60IX0tVNO-evzByI0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
