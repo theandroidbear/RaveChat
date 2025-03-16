@@ -2,11 +2,17 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+<!--    <item-->
+<!--        android:id="@+id/more"-->
+<!--        android:title="More"-->
+<!--        android:icon="@drawable/ic_more"-->
+<!--        android:contentDescription="more"-->
+<!--        app:showAsAction="ifRoom"/>-->
     <item
-        android:id="@+id/more"
-        android:title="More"
-        android:icon="@drawable/ic_more"
-        android:contentDescription="more"
-        app:showAsAction="ifRoom"/>
+        android:title="My Profile"
+        android:id="@+id/myAccount"/>
+    <item
+        android:title="Log out"
+        android:id="@+id/logOut"/>
 
 </menu>

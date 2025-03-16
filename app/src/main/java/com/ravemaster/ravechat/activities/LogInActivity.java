@@ -8,10 +8,14 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.ravemaster.ravechat.R;
 import com.ravemaster.ravechat.databinding.ActivityLogInBinding;
 import com.ravemaster.ravechat.utilities.Constants;
 import com.ravemaster.ravechat.utilities.PreferenceManager;
@@ -33,6 +37,11 @@ public class LogInActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         binding = ActivityLogInBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
 
         preferenceManager = new PreferenceManager(this);
         getEditTexts();
@@ -66,13 +75,14 @@ public class LogInActivity extends AppCompatActivity {
         isLoading(true);
         FirebaseFirestore database = FirebaseFirestore.getInstance();
         database.collection(Constants.KEY_COLLECTION_USERS)
-                .whereEqualTo(Constants.KEY_EMAIL,one.getText().toString())
+                .whereEqualTo(Constants.KEY_NAME,one.getText().toString())
                 .whereEqualTo(Constants.KEY_PASSWORD,two.getText().toString())
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful() && task.getResult() != null && !task.getResult().getDocuments().isEmpty()){
                         DocumentSnapshot snapshot = task.getResult().getDocuments().get(0);
 
+                        preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN,true);
                         preferenceManager.putString(Constants.KEY_USER_ID,snapshot.getId());
                         preferenceManager.putString(Constants.KEY_NAME,snapshot.getString(Constants.KEY_NAME));
                         preferenceManager.putString(Constants.KEY_IMAGE,snapshot.getString(Constants.KEY_IMAGE));

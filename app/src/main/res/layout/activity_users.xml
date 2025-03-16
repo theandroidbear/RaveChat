@@ -5,8 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.UsersActivity"
-    android:fitsSystemWindows="true">
+    tools:context=".activities.UsersActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -46,13 +45,29 @@
         android:indeterminate="true"
         android:id="@+id/loadingUsers"
         android:visibility="gone"/>
-    <TextView
+    <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Error loading users"
-        android:textColor="?attr/colorError"
         android:layout_centerInParent="true"
-        android:id="@+id/usersErrorMessage"
-        android:visibility="gone"/>
+        android:id="@+id/errorLayout"
+        android:visibility="gone">
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:textColor="?attr/colorError"
+            android:src="@drawable/ic_remove"
+            android:layout_centerInParent="true"
+            android:id="@+id/usersErrorImage"
+            android:visibility="visible"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Friends list unavailable"
+            android:layout_below="@id/usersErrorImage"
+            android:id="@+id/userErrorMessage"
+            android:layout_marginTop="20dp"
+            android:layout_centerHorizontal="true"
+            android:textColor="?attr/colorError"/>
+    </RelativeLayout>
 
 </RelativeLayout>

@@ -6,6 +6,9 @@ import android.view.View;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -33,6 +36,11 @@ public class UsersActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         binding = ActivityUsersBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
         usersList = new ArrayList<>();
         adapter = new UsersAdapter(this,this);
         preferenceManager = new PreferenceManager(this);
@@ -90,8 +98,7 @@ public class UsersActivity extends AppCompatActivity {
     }
 
     private void showErrorText(){
-        binding.usersErrorMessage.setText("Error loading users");
-        binding.usersErrorMessage.setVisibility(View.VISIBLE);
+        binding.errorLayout.setVisibility(View.VISIBLE);
     }
 
 }
