@@ -1,13 +1,16 @@
 package com.ravemaster.ravechat.models;
 
-public class Users {
-    String name, email, image, token;
+import java.io.Serializable;
 
-    public Users(String name, String email, String image, String token) {
+public class User implements Serializable {
+    String name, email, image, token,id;
+
+    public User(String name, String email, String image, String token, String id) {
         this.name = name;
         this.email = email;
         this.image = image;
         this.token = token;
+        this.id = id;
     }
 
     public String getName() {
@@ -24,5 +27,9 @@ public class Users {
 
     public String getToken() {
         return token;
+    }
+
+    public String getId(){
+        return id;
     }
 }

@@ -7,7 +7,7 @@
     android:layout_marginEnd="64dp"
     android:layout_marginStart="10dp"
     android:layout_marginBottom="5dp"
-    android:layout_marginTop="10dp">
+    android:layout_marginTop="5dp">
 
     <TextView
         android:layout_width="wrap_content"
@@ -15,13 +15,14 @@
         android:background="@drawable/receiver_chat_bubble"
         android:text="This is a very long message from the receiver to the sender."
         android:textSize="16sp"
+        android:layout_margin="5dp"
         android:id="@+id/receiverMessage"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="start"
-        android:layout_marginTop="5dp"
+        android:layout_margin="5dp"
         android:text="12:09 AM"
         android:textColor="?attr/colorPrimary"
         android:id="@+id/receiverTime"/>

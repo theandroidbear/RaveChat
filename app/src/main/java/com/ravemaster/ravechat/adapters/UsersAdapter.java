@@ -1,8 +1,6 @@
 package com.ravemaster.ravechat.adapters;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Base64;
@@ -12,26 +10,26 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.ravemaster.ravechat.activities.ChatActivity;
 import com.ravemaster.ravechat.databinding.UserListItemBinding;
-import com.ravemaster.ravechat.models.Users;
+import com.ravemaster.ravechat.listeners.UserClick;
+import com.ravemaster.ravechat.models.User;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UsersViewHolder> {
 
-    private List<Users> usersList = new ArrayList<>();
+    private List<User> userList = new ArrayList<>();
     private Context context;
-    private Activity activity;
+    UserClick userClick;
 
-    public UsersAdapter( Context context, Activity activity) {
+    public UsersAdapter( Context context, UserClick userClick) {
         this.context = context;
-        this.activity = activity;
+        this.userClick = userClick;
     }
 
-    public void setUsersList(List<Users> usersList) {
-        this.usersList = usersList;
+    public void setUsersList(List<User> userList) {
+        this.userList = userList;
     }
 
     @NonNull
@@ -47,16 +45,15 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UsersViewHol
 
     @Override
     public void onBindViewHolder(@NonNull UsersViewHolder holder, int position) {
-        holder.setUserData(usersList.get(position));
+        holder.setUserData(userList.get(position));
         holder.binding.userLayout.setOnClickListener(v->{
-            context.startActivity(new Intent(context, ChatActivity.class));
-            activity.finish();
+            userClick.onClick(userList.get(position));
         });
     }
 
     @Override
     public int getItemCount() {
-        return usersList.size();
+        return userList.size();
     }
 
     class UsersViewHolder extends RecyclerView.ViewHolder {
@@ -65,9 +62,9 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UsersViewHol
             super(userListItemBinding.getRoot());
             binding = userListItemBinding;
         }
-        void setUserData(Users users){
-            binding.userImage.setImageBitmap(getUserImage(users.getImage()));
-            binding.userName.setText(users.getName());
+        void setUserData(User user){
+            binding.userImage.setImageBitmap(getUserImage(user.getImage()));
+            binding.userName.setText(user.getName());
         }
     }
 

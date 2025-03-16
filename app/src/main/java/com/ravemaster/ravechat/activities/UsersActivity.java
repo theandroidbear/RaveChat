@@ -16,7 +16,8 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.ravemaster.ravechat.R;
 import com.ravemaster.ravechat.adapters.UsersAdapter;
 import com.ravemaster.ravechat.databinding.ActivityUsersBinding;
-import com.ravemaster.ravechat.models.Users;
+import com.ravemaster.ravechat.listeners.UserClick;
+import com.ravemaster.ravechat.models.User;
 import com.ravemaster.ravechat.utilities.Constants;
 import com.ravemaster.ravechat.utilities.PreferenceManager;
 
@@ -26,7 +27,7 @@ import java.util.List;
 public class UsersActivity extends AppCompatActivity {
 
     ActivityUsersBinding binding;
-    List<Users> usersList;
+    List<User> userList;
     UsersAdapter adapter;
     PreferenceManager preferenceManager;
 
@@ -41,8 +42,8 @@ public class UsersActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        usersList = new ArrayList<>();
-        adapter = new UsersAdapter(this,this);
+        userList = new ArrayList<>();
+        adapter = new UsersAdapter(this,userClick);
         preferenceManager = new PreferenceManager(this);
         getUsers();
 
@@ -67,11 +68,11 @@ public class UsersActivity extends AppCompatActivity {
                             if (currentUserId.equalsIgnoreCase(snapshot.getId())){
                                 continue;
                             }
-                            Users user = new Users(snapshot.getString(Constants.KEY_NAME),snapshot.getString(Constants.KEY_EMAIL),snapshot.getString(Constants.KEY_IMAGE),snapshot.getString(Constants.KEY_FCM_TOKEN));
-                            usersList.add(user);
+                            User user = new User(snapshot.getString(Constants.KEY_NAME),snapshot.getString(Constants.KEY_EMAIL),snapshot.getString(Constants.KEY_IMAGE),snapshot.getString(Constants.KEY_FCM_TOKEN),snapshot.getId());
+                            userList.add(user);
                         }
-                        if (!usersList.isEmpty()){
-                            showUsers(usersList);
+                        if (!userList.isEmpty()){
+                            showUsers(userList);
                         } else {
                             showErrorText();
                         }
@@ -81,13 +82,23 @@ public class UsersActivity extends AppCompatActivity {
                 });
     }
 
-    private void showUsers(List<Users> usersList) {
+    private void showUsers(List<User> userList) {
         binding.usersRecycler.setVisibility(View.VISIBLE);
-        adapter.setUsersList(usersList);
+        adapter.setUsersList(userList);
         binding.usersRecycler.setAdapter(adapter);
         binding.usersRecycler.setHasFixedSize(true);
         binding.usersRecycler.setLayoutManager(new LinearLayoutManager(this));
     }
+
+    private final UserClick userClick = new UserClick() {
+        @Override
+        public void onClick(User user) {
+            Intent intent = new Intent(UsersActivity.this, ChatActivity.class);
+            intent.putExtra(Constants.KEY_USER,user);
+            startActivity(intent);
+            finish();
+        }
+    };
 
     private void isLoading(boolean loading){
         if (loading){
