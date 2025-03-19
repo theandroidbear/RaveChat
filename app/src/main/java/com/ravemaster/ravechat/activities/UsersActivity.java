@@ -24,7 +24,7 @@ import com.ravemaster.ravechat.utilities.PreferenceManager;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UsersActivity extends AppCompatActivity {
+public class UsersActivity extends BaseActivity {
 
     ActivityUsersBinding binding;
     List<User> userList;

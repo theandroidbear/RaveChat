@@ -45,6 +45,12 @@ dependencies {
 
     implementation(libs.splashscreen)
 
+    implementation(libs.retrofit)
+    implementation(libs.gsonConverter)
+    implementation(libs.okhttp3)
+    implementation(libs.logging.interceptor)
+    implementation(libs.converter.scalars)
+
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.messaging)
     implementation(libs.firebase.firestore)

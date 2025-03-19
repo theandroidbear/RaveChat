@@ -7,12 +7,10 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Base64;
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -38,8 +36,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
-public class ChatActivity extends AppCompatActivity {
+public class ChatActivity extends BaseActivity {
 
     ActivityChatBinding binding;
     User receiver;
@@ -48,6 +47,7 @@ public class ChatActivity extends AppCompatActivity {
     PreferenceManager preferenceManager;
     FirebaseFirestore database;
     String conversationId = null;
+    boolean isReceiverAvailable = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -200,6 +200,29 @@ public class ChatActivity extends AppCompatActivity {
         database = FirebaseFirestore.getInstance();
     }
 
+    private void listenReceiverAvailability(){
+        database.collection(Constants.KEY_COLLECTION_USERS).document(
+                receiver.id
+        ).addSnapshotListener(ChatActivity.this,(value, error)->{
+            if (error != null){
+                return;
+            }
+            if (value != null){
+                if (value.getLong(Constants.KEY_AVAILABILITY) != null){
+                    int availability = Objects.requireNonNull(
+                            value.getLong(Constants.KEY_AVAILABILITY)
+                    ).intValue();
+                    isReceiverAvailable = availability == 1;
+                }
+            }
+            if (isReceiverAvailable){
+                binding.chatAvailability.setVisibility(View.VISIBLE);
+            } else {
+                binding.chatAvailability.setVisibility(View.GONE);
+            }
+        });
+    }
+
     private void loadReceiverDetails() {
         receiver = (User) getIntent().getSerializableExtra(Constants.KEY_USER);
         binding.chatImage.setImageBitmap(getUserImage(receiver.image));
@@ -213,5 +236,11 @@ public class ChatActivity extends AppCompatActivity {
 
     private String getReadableTime(Date date){
         return new SimpleDateFormat("MMMM dd, yyyy - hh:mm a", Locale.getDefault()).format(date);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        listenReceiverAvailability();
     }
 }

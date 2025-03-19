@@ -46,15 +46,34 @@
                     android:layout_centerInParent="true"/>
             </RelativeLayout>
         </com.google.android.material.card.MaterialCardView>
-        <TextView
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:text="Chat name"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:textColor="?attr/colorPrimary"
-            android:id="@+id/chatName"/>
+            android:orientation="vertical"
+            android:layout_centerInParent="true">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="Chat name"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="?attr/colorOnBackground"
+                android:id="@+id/chatName"
+                android:layout_gravity="center"
+                android:textAlignment="center"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="Online"
+                android:textStyle="bold"
+                android:textColor="?attr/colorPrimary"
+                android:id="@+id/chatAvailability"
+                android:layout_gravity="center"
+                android:textAlignment="center"
+                android:visibility="gone"/>
+        </LinearLayout>
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

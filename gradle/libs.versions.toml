@@ -13,6 +13,11 @@ bom = "33.10.0"
 firebaseMessaging = "24.1.0"
 firebaseFirestore = "25.1.2"
 
+retrofitVersion = "2.11.0"
+gsonVersion = "2.11.0"
+okhttpVersion = "5.0.0-alpha.10"
+loggingVersion = "5.0.0-alpha.10"
+
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
@@ -25,6 +30,11 @@ splashscreen = { group = "androidx.core", name = "core-splashscreen", version.re
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "bom"}
 firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging", version.ref = "firebaseMessaging" }
 firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore", version.ref = "firebaseFirestore" }
+retrofit = {group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofitVersion"}
+gsonConverter = {group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "gsonVersion"}
+okhttp3= {group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttpVersion"}
+logging-interceptor= {group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "loggingVersion"}
+converter-scalars= {group = "com.squareup.retrofit2", name = "converter-scalars", version.ref = "retrofitVersion"}
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
