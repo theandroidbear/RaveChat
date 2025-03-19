@@ -2,36 +2,46 @@ package com.ravemaster.ravechat.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.PopupMenu;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.google.android.material.appbar.MaterialToolbar;
+import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.ravemaster.ravechat.R;
+import com.ravemaster.ravechat.adapters.RecentAdapter;
 import com.ravemaster.ravechat.databinding.ActivityMainBinding;
+import com.ravemaster.ravechat.listeners.ConversationClick;
+import com.ravemaster.ravechat.models.ChatMessage;
+import com.ravemaster.ravechat.models.User;
 import com.ravemaster.ravechat.utilities.Constants;
 import com.ravemaster.ravechat.utilities.PreferenceManager;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     PreferenceManager preferenceManager;
     ActivityMainBinding binding;
+    List<ChatMessage> conversations;
+    FirebaseFirestore database;
+    RecentAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,12 +50,10 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         preferenceManager = new PreferenceManager(this);
+        init();
         getToken();
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+        binding.recentProgress.setVisibility(View.GONE);
+        listenConversations();
 
         binding.btnViewUsers.setOnClickListener(v->{
             startActivity(new Intent(this, UsersActivity.class));
@@ -53,41 +61,80 @@ public class MainActivity extends AppCompatActivity {
 
         setSupportActionBar(binding.myToolBar);
 
-//        binding.myToolBar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-//            @Override
-//            public boolean onMenuItemClick(MenuItem item) {
-//                if (item.getItemId() == R.id.more){
-//                    showPopUpMenu(binding.myToolBar);
-//                    return true;
-//                } else {
-//                    return false;
-//                }
-//
-//            }
-//        });
-
     }
 
-    private void showPopUpMenu(MaterialToolbar myToolBar) {
-        PopupMenu popupMenu = new PopupMenu(this,myToolBar);
-        popupMenu.getMenuInflater().inflate(R.menu.main_menu,popupMenu.getMenu());
-        popupMenu.setGravity(Gravity.END);
-        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                if (item.getItemId() == R.id.myAccount){
-                    showToasts("Navigate to my profile activity");
-                    return true;
-                } else if(item.getItemId() == R.id.logOut){
-                    signOut();
-                    return true;
-                } else {
-                    return false;
-                }
+    private void listenConversations(){
+        database.collection(Constants.KEY_COLLECTION_CONVERSATIONS)
+                .whereEqualTo(Constants.KEY_SENDER_ID,preferenceManager.getString(Constants.KEY_USER_ID))
+                .addSnapshotListener(eventListener);
+        database.collection(Constants.KEY_COLLECTION_CONVERSATIONS)
+                .whereEqualTo(Constants.KEY_RECEIVER_ID,preferenceManager.getString(Constants.KEY_USER_ID))
+                .addSnapshotListener(eventListener);
+    }
+
+    private final EventListener<QuerySnapshot> eventListener = new EventListener<QuerySnapshot>() {
+        @Override
+        public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+            if (error != null){
+                return;
             }
-        });
-        popupMenu.show();
+            if (value != null){
+                for(DocumentChange documentChange: value.getDocumentChanges()){
+                    if (documentChange.getType() == DocumentChange.Type.ADDED){
+                        String senderId = documentChange.getDocument().getString(Constants.KEY_SENDER_ID);
+                        String receiverId = documentChange.getDocument().getString(Constants.KEY_RECEIVER_ID);
+                        ChatMessage chatMessage = new ChatMessage();
+                        chatMessage.senderId = senderId;
+                        chatMessage.receiverId = receiverId;
+                        if (preferenceManager.getString(Constants.KEY_USER_ID).equals(senderId)){
+                            chatMessage.conversationImage = documentChange.getDocument().getString(Constants.KEY_RECEIVER_IMAGE);
+                            chatMessage.conversationName = documentChange.getDocument().getString(Constants.KEY_RECEIVER_NAME);
+                            chatMessage.conversationId = documentChange.getDocument().getString(Constants.KEY_RECEIVER_ID);
+                        } else {
+                            chatMessage.conversationImage = documentChange.getDocument().getString(Constants.KEY_SENDER_IMAGE);
+                            chatMessage.conversationName = documentChange.getDocument().getString(Constants.KEY_SENDER_NAME);
+                            chatMessage.conversationId = documentChange.getDocument().getString(Constants.KEY_SENDER_ID);
+                        }
+                        chatMessage.message = documentChange.getDocument().getString(Constants.KEY_LAST_MESSAGE);
+                        chatMessage.date = documentChange.getDocument().getDate(Constants.KEY_TIMESTAMP);
+                        conversations.add(chatMessage);
+                    } else if (documentChange.getType() == DocumentChange.Type.MODIFIED){
+                        for (int i = 0; i < conversations.size(); i++) {
+                            String senderId = documentChange.getDocument().getString(Constants.KEY_SENDER_ID);
+                            String receiverId = documentChange.getDocument().getString(Constants.KEY_RECEIVER_ID);
+                            if (conversations.get(i).senderId.equals(senderId) && conversations.get(i).receiverId.equals(receiverId)){
+                                conversations.get(i).message = documentChange.getDocument().getString(Constants.KEY_LAST_MESSAGE);
+                                conversations.get(i).date = documentChange.getDocument().getDate(Constants.KEY_TIMESTAMP);
+                                break;
+                            }
+                        }
+                    }
+                }
+                Collections.sort(conversations, (obj1,obj2)->obj2.date.compareTo(obj1.date));
+                adapter.notifyDataSetChanged();
+                binding.recentRecycler.smoothScrollToPosition(0);
+                binding.recentRecycler.setVisibility(View.VISIBLE);
+                binding.recentProgress.setVisibility(View.GONE);
+            }
+        }
+    };
+
+    private void init(){
+        conversations = new ArrayList<>();
+        adapter = new RecentAdapter(this,conversations,conversationClick);
+        binding.recentRecycler.setAdapter(adapter);
+        binding.recentRecycler.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+        database = FirebaseFirestore.getInstance();
     }
+
+    private final ConversationClick conversationClick = new ConversationClick() {
+        @Override
+        public void onClick(User user) {
+            Intent intent = new Intent(MainActivity.this, ChatActivity.class);
+            intent.putExtra(Constants.KEY_USER,user);
+            startActivity(intent);
+        }
+    };
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

@@ -36,7 +36,7 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UsersViewHol
     @Override
     public UsersViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         UserListItemBinding userListItemBinding = UserListItemBinding.inflate(LayoutInflater.from(
-                parent.getContext()),
+                context),
                 parent,
                 false
         );
@@ -63,8 +63,8 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UsersViewHol
             binding = userListItemBinding;
         }
         void setUserData(User user){
-            binding.userImage.setImageBitmap(getUserImage(user.getImage()));
-            binding.userName.setText(user.getName());
+            binding.userImage.setImageBitmap(getUserImage(user.image));
+            binding.userName.setText(user.name);
         }
     }
 

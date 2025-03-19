@@ -11,24 +11,20 @@ import com.ravemaster.ravechat.databinding.ListContainerReceiverMessageBinding;
 import com.ravemaster.ravechat.databinding.ListContainerSentMessageBinding;
 import com.ravemaster.ravechat.models.ChatMessage;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private List<ChatMessage> messages = new ArrayList<>();
+    private List<ChatMessage> messages;
     private Context context;
     private String senderId;
 
     private static final int VIEW_TYPE_SENT = 1;
     private static final int VIEW_TYPE_RECEIVED = 2;
 
-    public ChatAdapter(Context context, String senderId) {
+    public ChatAdapter(Context context, String senderId, List<ChatMessage> messages) {
         this.context = context;
         this.senderId = senderId;
-    }
-
-    public void setMessages(List<ChatMessage> messages) {
         this.messages = messages;
     }
 
@@ -70,7 +66,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     @Override
     public int getItemViewType(int position) {
-        if (messages.get(position).getSenderId().equals(senderId)){
+        if (messages.get(position).senderId.equals(senderId)){
             return VIEW_TYPE_SENT;
         } else {
             return VIEW_TYPE_RECEIVED;
@@ -84,8 +80,8 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             binding = listContainerSentMessageBinding;
         }
         void setData(ChatMessage message){
-            binding.senderMessage.setText(message.getMessage());
-            binding.senderTime.setText(message.getTime());
+            binding.senderMessage.setText(message.message);
+            binding.senderTime.setText(message.time);
         }
     }
     static class ReceiverMessageViewHolder extends RecyclerView.ViewHolder{
@@ -95,8 +91,8 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             binding = listContainerReceiverMessageBinding;
         }
         void setData(ChatMessage message){
-            binding.receiverMessage.setText(message.getMessage());
-            binding.receiverTime.setText(message.getTime());
+            binding.receiverMessage.setText(message.message);
+            binding.receiverTime.setText(message.time);
         }
     }
 }

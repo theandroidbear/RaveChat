@@ -37,11 +37,6 @@ public class LogInActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         binding = ActivityLogInBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
 
         preferenceManager = new PreferenceManager(this);
         getEditTexts();

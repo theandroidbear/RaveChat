@@ -37,11 +37,6 @@ public class UsersActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         binding = ActivityUsersBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
         userList = new ArrayList<>();
         adapter = new UsersAdapter(this,userClick);
         preferenceManager = new PreferenceManager(this);
@@ -68,7 +63,12 @@ public class UsersActivity extends AppCompatActivity {
                             if (currentUserId.equalsIgnoreCase(snapshot.getId())){
                                 continue;
                             }
-                            User user = new User(snapshot.getString(Constants.KEY_NAME),snapshot.getString(Constants.KEY_EMAIL),snapshot.getString(Constants.KEY_IMAGE),snapshot.getString(Constants.KEY_FCM_TOKEN),snapshot.getId());
+                            User user = new User();
+                            user.name = snapshot.getString(Constants.KEY_NAME);
+                            user.email = snapshot.getString(Constants.KEY_EMAIL);
+                            user.image = snapshot.getString(Constants.KEY_IMAGE);
+                            user.token = snapshot.getString(Constants.KEY_FCM_TOKEN);
+                            user.id = snapshot.getId();
                             userList.add(user);
                         }
                         if (!userList.isEmpty()){

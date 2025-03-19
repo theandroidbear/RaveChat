@@ -23,11 +23,6 @@ public class SplashLaunchActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         SplashScreen.installSplashScreen(this);
         setContentView(R.layout.activity_splash_launch);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
         PreferenceManager preferenceManager = new PreferenceManager(this);
         new Handler().postDelayed(() -> {
             if (preferenceManager.getBoolean(Constants.KEY_IS_SIGNED_IN)){
