@@ -254,6 +254,9 @@ public class ChatActivity extends BaseActivity {
         }).start();
     }
 
+
+
+
     private void getNotificationToken(String userId, String name, String text){
         FirebaseFirestore.getInstance()
                 .collection(Constants.KEY_COLLECTION_USERS)
