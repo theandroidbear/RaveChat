@@ -18,6 +18,8 @@ gsonVersion = "2.11.0"
 okhttpVersion = "5.0.0-alpha.10"
 loggingVersion = "5.0.0-alpha.10"
 
+authVersion = "1.23.0"
+
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
@@ -35,6 +37,7 @@ gsonConverter = {group = "com.squareup.retrofit2", name = "converter-gson", vers
 okhttp3= {group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttpVersion"}
 logging-interceptor= {group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "loggingVersion"}
 converter-scalars= {group = "com.squareup.retrofit2", name = "converter-scalars", version.ref = "retrofitVersion"}
+google-auth= {group = "com.google.auth", name = "google-auth-library-oauth2-http", version.ref = "authVersion"}
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

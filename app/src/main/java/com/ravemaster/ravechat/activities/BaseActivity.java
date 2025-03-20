@@ -13,6 +13,7 @@ import com.ravemaster.ravechat.utilities.PreferenceManager;
 public class BaseActivity extends AppCompatActivity {
 
     DocumentReference documentReference;
+    boolean isOnline = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -21,19 +22,44 @@ public class BaseActivity extends AppCompatActivity {
         FirebaseFirestore database = FirebaseFirestore.getInstance();
         documentReference = database.collection(Constants.KEY_COLLECTION_USERS)
                 .document(preferenceManager.getString(Constants.KEY_USER_ID));
+
+        documentReference.update(Constants.KEY_AVAILABILITY,1);
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (!isOnline){
+            documentReference.update(Constants.KEY_AVAILABILITY,1);
+            isOnline = true;
+        }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        documentReference.update(Constants.KEY_AVAILABILITY,0);
+        if (isOnline){
+            documentReference.update(Constants.KEY_AVAILABILITY,0);
+            isOnline = false;
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        documentReference.update(Constants.KEY_AVAILABILITY,1);
+        if (!isOnline){
+            documentReference.update(Constants.KEY_AVAILABILITY,1);
+            isOnline = true;
+        }
     }
 
-
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (isOnline){
+            documentReference.update(Constants.KEY_AVAILABILITY,0);
+            isOnline = false;
+        }
+    }
 }

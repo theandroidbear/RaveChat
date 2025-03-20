@@ -34,6 +34,17 @@ android {
     buildFeatures {
         viewBinding = true
     }
+
+    packaging {
+        resources{
+            excludes += "META-INF/INDEX.LIST"
+            excludes += "META-INF/LICENSE"
+            excludes += "META-INF/NOTICE"
+            excludes += "META-INF/MANIFEST.MF"
+            excludes += "META-INF/DEPENDENCIES"
+        }
+    }
+
 }
 
 dependencies {
@@ -50,6 +61,7 @@ dependencies {
     implementation(libs.okhttp3)
     implementation(libs.logging.interceptor)
     implementation(libs.converter.scalars)
+    implementation(libs.google.auth)
 
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.messaging)

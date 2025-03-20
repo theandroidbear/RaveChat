@@ -1,6 +1,8 @@
 package com.ravemaster.ravechat.activities;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -8,10 +10,14 @@ import android.view.View;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.EventListener;
@@ -33,6 +39,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MainActivity extends BaseActivity {
 
@@ -41,6 +48,10 @@ public class MainActivity extends BaseActivity {
     List<ChatMessage> conversations;
     FirebaseFirestore database;
     RecentAdapter adapter;
+
+    String[] permissions = new String[]{
+            Manifest.permission.POST_NOTIFICATIONS
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,11 +65,31 @@ public class MainActivity extends BaseActivity {
         binding.recentProgress.setVisibility(View.GONE);
         listenConversations();
 
+        if (hasPermissions()){
+            Toast.makeText(this, "All permissions granted", Toast.LENGTH_SHORT).show();
+        }else{
+            if (shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS)){
+            }else {
+                requestPermissionLauncher.launch(permissions);
+            }
+        }
+
         binding.btnViewUsers.setOnClickListener(v->{
             startActivity(new Intent(this, UsersActivity.class));
         });
 
         setSupportActionBar(binding.myToolBar);
+
+    }
+
+    private ActivityResultLauncher<String[]> requestPermissionLauncher = registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), new ActivityResultCallback<Map<String, Boolean>>() {
+        @Override
+        public void onActivityResult(Map<String, Boolean> o) {
+
+        }
+    });
+    private boolean hasPermissions(){
+        return checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED;
 
     }
 
@@ -179,6 +210,7 @@ public class MainActivity extends BaseActivity {
     }
 
     private void updateToken(String token){
+        preferenceManager.putString(Constants.KEY_FCM_TOKEN,token);
         FirebaseFirestore database = FirebaseFirestore.getInstance();
         DocumentReference documentReference = database
                 .collection(Constants.KEY_COLLECTION_USERS)

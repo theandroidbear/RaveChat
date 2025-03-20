@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Base64;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -15,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -22,13 +24,18 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.ravemaster.ravechat.R;
 import com.ravemaster.ravechat.adapters.ChatAdapter;
+import com.ravemaster.ravechat.api.RequestManager;
+import com.ravemaster.ravechat.api.interfaces.FCMListener;
+import com.ravemaster.ravechat.api.models.FCMResponse;
 import com.ravemaster.ravechat.databinding.ActivityChatBinding;
 import com.ravemaster.ravechat.models.ChatMessage;
 import com.ravemaster.ravechat.models.User;
 import com.ravemaster.ravechat.utilities.Constants;
 import com.ravemaster.ravechat.utilities.PreferenceManager;
 
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -48,6 +55,8 @@ public class ChatActivity extends BaseActivity {
     FirebaseFirestore database;
     String conversationId = null;
     boolean isReceiverAvailable = false;
+    RequestManager manager;
+    String accessToken;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +103,9 @@ public class ChatActivity extends BaseActivity {
             map.put(Constants.KEY_LAST_MESSAGE,binding.enterMessage.getText().toString());
             map.put(Constants.KEY_TIMESTAMP, new Date());
             addConversation(map);
+        }
+        if (!isReceiverAvailable){
+            sendNotification(receiver.id,receiver.name,binding.enterMessage.getText().toString());
         }
         binding.enterMessage.setText(null);
     }
@@ -192,6 +204,7 @@ public class ChatActivity extends BaseActivity {
     };
 
     private void init(Context context){
+        manager = new RequestManager(context);
         preferenceManager = new PreferenceManager(context);
         messages = new ArrayList<>();
         adapter = new ChatAdapter(context,preferenceManager.getString(Constants.KEY_USER_ID),messages);
@@ -214,6 +227,7 @@ public class ChatActivity extends BaseActivity {
                     ).intValue();
                     isReceiverAvailable = availability == 1;
                 }
+                receiver.token = value.getString(Constants.KEY_FCM_TOKEN);
             }
             if (isReceiverAvailable){
                 binding.chatAvailability.setVisibility(View.VISIBLE);
@@ -222,6 +236,52 @@ public class ChatActivity extends BaseActivity {
             }
         });
     }
+
+    private void sendNotification(String userId, String name, String text){
+        new Thread(()->{
+            try {
+                InputStream serviceAccountStream = getResources().openRawResource(R.raw.service_account);
+                GoogleCredentials credentials = GoogleCredentials
+                        .fromStream(serviceAccountStream)
+                        .createScoped(Collections.singleton(Constants.SCOPE));
+                credentials.refreshIfExpired();
+                accessToken = credentials.getAccessToken().getTokenValue();
+                getNotificationToken(userId,name,text);
+
+            } catch (Exception e){
+                showToasts(e.getMessage());
+            }
+        }).start();
+    }
+
+    private void getNotificationToken(String userId, String name, String text){
+        FirebaseFirestore.getInstance()
+                .collection(Constants.KEY_COLLECTION_USERS)
+                .document(userId)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    String targetToken = documentSnapshot.getString(Constants.KEY_FCM_TOKEN);
+                    if (targetToken != null) {
+                        manager.sendMessage(fcmListener,targetToken,accessToken,name,text);
+                    } else {
+                        showToasts("Target token not found!");
+                    }
+                })
+                .addOnFailureListener(e->{
+                    showToasts(e.getMessage());
+                });
+    }
+
+    private final FCMListener fcmListener = new FCMListener() {
+        @Override
+        public void unSuccess(FCMResponse response, String message) {
+        }
+
+        @Override
+        public void onFailed(String message) {
+            Toast.makeText(ChatActivity.this, message, Toast.LENGTH_SHORT).show();
+        }
+    };
 
     private void loadReceiverDetails() {
         receiver = (User) getIntent().getSerializableExtra(Constants.KEY_USER);
@@ -232,6 +292,10 @@ public class ChatActivity extends BaseActivity {
     public Bitmap getUserImage(String encodedImage) {
         byte[] bytes = Base64.decode(encodedImage, Base64.DEFAULT);
         return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+    }
+
+    private void showToasts(String message){
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
     }
 
     private String getReadableTime(Date date){
