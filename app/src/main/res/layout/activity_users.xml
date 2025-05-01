@@ -17,7 +17,7 @@
             android:layout_height="?attr/actionBarSize"
             android:id="@+id/friendsToolBar"
             app:title="New chat"
-            app:navigationIcon="@drawable/ic_back_new"
+            app:navigationIcon="@drawable/ic_back"
             style="@style/Widget.App.Toolbar"
             app:titleTextColor="?attr/colorPrimary"/>
     </com.google.android.material.appbar.AppBarLayout>
@@ -28,8 +28,11 @@
         android:text="Friends"
         android:layout_below="@id/friendsToolBarLayout"
         android:id="@+id/friendsText"
-        android:layout_margin="10dp"
-        android:layout_centerHorizontal="true"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_alignParentStart="true"
+        android:textSize="18sp"
         android:textColor="?attr/colorPrimary"/>
 
     <androidx.recyclerview.widget.RecyclerView

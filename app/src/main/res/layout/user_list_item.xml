@@ -8,9 +8,9 @@
     android:clickable="true"
     android:focusable="true">
     <com.google.android.material.card.MaterialCardView
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        app:cardCornerRadius="20dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        app:cardCornerRadius="25dp"
         android:id="@+id/userImageCardView"
         android:layout_marginStart="20dp"
         android:layout_marginBottom="10dp"
@@ -31,17 +31,33 @@
 
         </RelativeLayout>
     </com.google.android.material.card.MaterialCardView>
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
         android:layout_toEndOf="@id/userImageCardView"
-        android:layout_centerVertical="true"
-        android:id="@+id/userName"
-        android:text="This is a sample user name"
-        android:textSize="18sp"
-        android:layout_marginStart="10dp"
-        android:layout_marginBottom="10dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="10dp"/>
+        android:layout_centerVertical="true">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:id="@+id/userName"
+            android:text="This is a sample user name"
+            android:textSize="18sp"
+            android:layout_marginStart="5dp"
+            android:layout_marginBottom="5dp"
+            android:textStyle="bold"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/userEmail"
+            android:text="This is a sample user name"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="20dp"
+            android:singleLine="true"
+            android:ellipsize="end"
+            android:textSize="13sp"/>
+    </LinearLayout>
+
 
 </RelativeLayout>

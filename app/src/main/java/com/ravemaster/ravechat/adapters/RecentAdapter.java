@@ -73,6 +73,7 @@ public class RecentAdapter extends RecyclerView.Adapter<RecentAdapter.RecentView
             binding.convoImage.setImageBitmap(getUserImage(message.conversationImage));
             binding.convoMessage.setText(message.message);
             binding.convoName.setText(message.conversationName);
+            binding.textTime.setText(message.time);
         }
     }
 

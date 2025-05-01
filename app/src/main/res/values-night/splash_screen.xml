@@ -2,7 +2,7 @@
 <resources>
     <style name="Theme.RaveChat.MySplash" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">@color/dark_theme_background</item>
-        <item name="windowSplashScreenAnimatedIcon">@drawable/final_final_final_dark</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/chat_app_dark</item>
         <item name="postSplashScreenTheme">@style/Base.Theme.RaveChat</item>
         <item name="windowSplashScreenAnimationDuration">1000</item>
     </style>

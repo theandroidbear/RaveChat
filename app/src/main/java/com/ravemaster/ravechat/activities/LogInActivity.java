@@ -8,14 +8,10 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.ravemaster.ravechat.R;
 import com.ravemaster.ravechat.databinding.ActivityLogInBinding;
 import com.ravemaster.ravechat.utilities.Constants;
 import com.ravemaster.ravechat.utilities.PreferenceManager;
@@ -100,10 +96,10 @@ public class LogInActivity extends AppCompatActivity {
         password = two.getText().toString();
 
         if (email.isEmpty()){
-            setErrors(binding.logInUsername,"Field empty!");
+            setErrors(binding.logInUsername);
             return false;
         } else if (password.isEmpty()){
-            setErrors(binding.logInPassword,"Field empty!");
+            setErrors(binding.logInPassword);
             return false;
         } else {
             removeErrors();
@@ -111,9 +107,9 @@ public class LogInActivity extends AppCompatActivity {
         }
     }
 
-    private void setErrors(TextInputLayout layout, String error){
+    private void setErrors(TextInputLayout layout){
         layout.setErrorEnabled(true);
-        layout.setError(error);
+        layout.setError("Field empty!");
     }
 
     private void removeErrors(){

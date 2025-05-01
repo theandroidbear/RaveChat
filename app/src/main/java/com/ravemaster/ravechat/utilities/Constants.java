@@ -23,7 +23,7 @@ public class Constants {
     public static final String KEY_RECEIVER_IMAGE = "receiverImage";
     public static final String KEY_LAST_MESSAGE = "lastMessage";
     public static final String KEY_AVAILABILITY = "availability";
-    public static final String TAG = "FCMSender";
+    public static final String LAST_ONLINE = "lastOnline";
     public static final String SCOPE = "https://www.googleapis.com/auth/firebase.messaging";
     public static final String BASE_URL = "https://fcm.googleapis.com/";
 

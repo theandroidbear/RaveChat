@@ -17,7 +17,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_marginStart="16dp"
-            android:src="@drawable/ic_back_new"
+            android:src="@drawable/ic_back"
             android:layout_centerVertical="true"
             android:id="@+id/chatBack"
             android:background="@drawable/my_ripple"
@@ -50,29 +50,33 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_centerInParent="true">
+            android:layout_toEndOf="@id/chatCardView"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="20dp">
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="200dp"
                 android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
                 android:text="Chat name"
                 android:textSize="20sp"
                 android:textStyle="bold"
                 android:textColor="?attr/colorOnBackground"
                 android:id="@+id/chatName"
-                android:layout_gravity="center"
-                android:textAlignment="center"/>
+                android:layout_gravity="start"
+                android:ellipsize="end"
+                android:singleLine="true"/>
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="200dp"
                 android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
                 android:text="Online"
                 android:textStyle="bold"
                 android:textColor="?attr/colorPrimary"
                 android:id="@+id/chatAvailability"
-                android:layout_gravity="center"
-                android:textAlignment="center"
-                android:visibility="gone"/>
+                android:layout_gravity="start"
+                android:visibility="visible"
+                android:singleLine="true"
+                android:ellipsize="marquee"
+                android:textSize="12sp"
+                android:marqueeRepeatLimit="@integer/material_motion_duration_short_2"/>
         </LinearLayout>
         <ImageView
             android:layout_width="wrap_content"

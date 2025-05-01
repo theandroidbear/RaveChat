@@ -17,14 +17,10 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.ravemaster.ravechat.R;
 import com.ravemaster.ravechat.databinding.ActivitySignUpBinding;
 import com.ravemaster.ravechat.utilities.Constants;
 import com.ravemaster.ravechat.utilities.PreferenceManager;
@@ -32,7 +28,10 @@ import com.ravemaster.ravechat.utilities.PreferenceManager;
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 
 public class SignUpActivity extends AppCompatActivity {
 
@@ -105,6 +104,7 @@ public class SignUpActivity extends AppCompatActivity {
         user.put(Constants.KEY_EMAIL, two.getText().toString());
         user.put(Constants.KEY_PASSWORD, four.getText().toString());
         user.put(Constants.KEY_IMAGE, encodedImage);
+        user.put(Constants.LAST_ONLINE, getReadableTime(new Date()));
         database.collection(Constants.KEY_COLLECTION_USERS)
                 .add(user)
                 .addOnSuccessListener(documentReference -> {
@@ -222,5 +222,8 @@ public class SignUpActivity extends AppCompatActivity {
         return Base64.encodeToString(bytes,Base64.DEFAULT);
     }
 
+    private String getReadableTime(Date date){
+        return new SimpleDateFormat("MMM dd, HH:mm", Locale.getDefault()).format(date);
+    }
 
 }

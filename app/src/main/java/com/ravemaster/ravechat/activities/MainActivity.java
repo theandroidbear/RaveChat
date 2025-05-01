@@ -17,7 +17,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.EventListener;
@@ -35,10 +34,13 @@ import com.ravemaster.ravechat.models.User;
 import com.ravemaster.ravechat.utilities.Constants;
 import com.ravemaster.ravechat.utilities.PreferenceManager;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class MainActivity extends BaseActivity {
@@ -126,6 +128,7 @@ public class MainActivity extends BaseActivity {
                             chatMessage.conversationId = documentChange.getDocument().getString(Constants.KEY_SENDER_ID);
                         }
                         chatMessage.message = documentChange.getDocument().getString(Constants.KEY_LAST_MESSAGE);
+                        chatMessage.time = getReadableTime(documentChange.getDocument().getDate(Constants.KEY_TIMESTAMP));
                         chatMessage.date = documentChange.getDocument().getDate(Constants.KEY_TIMESTAMP);
                         conversations.add(chatMessage);
                     } else if (documentChange.getType() == DocumentChange.Type.MODIFIED){
@@ -134,7 +137,8 @@ public class MainActivity extends BaseActivity {
                             String receiverId = documentChange.getDocument().getString(Constants.KEY_RECEIVER_ID);
                             if (conversations.get(i).senderId.equals(senderId) && conversations.get(i).receiverId.equals(receiverId)){
                                 conversations.get(i).message = documentChange.getDocument().getString(Constants.KEY_LAST_MESSAGE);
-                                conversations.get(i).date = documentChange.getDocument().getDate(Constants.KEY_TIMESTAMP);
+                                conversations.get(i).time = getReadableTime(documentChange.getDocument().getDate(Constants.KEY_TIMESTAMP));
+                                documentChange.getDocument().getDate(Constants.KEY_TIMESTAMP);
                                 break;
                             }
                         }
@@ -177,7 +181,8 @@ public class MainActivity extends BaseActivity {
         int id = item.getItemId();
 
         if (id == R.id.myAccount) {
-            showToasts("My account");
+            Intent intent = new Intent(this, ProfileActivity.class);
+            startActivity(intent);
             return true;
         } else if (id == R.id.logOut) {
             signOut();
@@ -220,6 +225,10 @@ public class MainActivity extends BaseActivity {
                 .addOnFailureListener(exception->{
                     showToasts("Unable to update token");
                 });
+    }
+
+    private String getReadableTime(Date date){
+        return new SimpleDateFormat("MMM dd, HH:mm", Locale.getDefault()).format(date);
     }
 
     private void showToasts(String message){

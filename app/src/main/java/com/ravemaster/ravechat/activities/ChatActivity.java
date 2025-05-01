@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -33,6 +34,7 @@ import com.ravemaster.ravechat.databinding.ActivityChatBinding;
 import com.ravemaster.ravechat.models.ChatMessage;
 import com.ravemaster.ravechat.models.User;
 import com.ravemaster.ravechat.utilities.Constants;
+import com.ravemaster.ravechat.utilities.JsonKey;
 import com.ravemaster.ravechat.utilities.PreferenceManager;
 
 import java.io.InputStream;
@@ -57,6 +59,7 @@ public class ChatActivity extends BaseActivity {
     boolean isReceiverAvailable = false;
     RequestManager manager;
     String accessToken;
+    String lastOnline;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,8 +73,9 @@ public class ChatActivity extends BaseActivity {
         listenMessages();
 
         binding.chatBack.setOnClickListener(v->{
-            startActivity(new Intent(this, MainActivity.class));
-            finish();
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            startActivity(intent);
         });
 
         binding.btnSend.setOnClickListener(new View.OnClickListener() {
@@ -105,7 +109,7 @@ public class ChatActivity extends BaseActivity {
             addConversation(map);
         }
         if (!isReceiverAvailable){
-            sendNotification(receiver.id,receiver.name,binding.enterMessage.getText().toString());
+            sendNotification(receiver.id, preferenceManager.getString(Constants.KEY_NAME), binding.enterMessage.getText().toString());
         }
         binding.enterMessage.setText(null);
     }
@@ -128,7 +132,7 @@ public class ChatActivity extends BaseActivity {
                 return;
             }
             if (value != null){
-                int count = messages.size();
+                int previousCount = messages.size();
                 for (DocumentChange documentChange: value.getDocumentChanges()){
                     if (documentChange.getType() == DocumentChange.Type.ADDED){
                         ChatMessage chatMessage = new ChatMessage();
@@ -141,11 +145,14 @@ public class ChatActivity extends BaseActivity {
                     }
                 }
                 Collections.sort(messages, (obj1, obj2)->obj1.date.compareTo(obj2.date));
-                if (count == 0){
+                int newCount = messages.size();
+                if (previousCount == 0){
                     adapter.notifyDataSetChanged();
-                } else {
-                    adapter.notifyItemRangeInserted(messages.size(),messages.size());
-                    binding.chatRecycler.smoothScrollToPosition(messages.size() -1);
+                } else if (newCount>previousCount) {
+                    adapter.notifyItemRangeInserted(previousCount,newCount-previousCount);
+                }
+                if (!messages.isEmpty()){
+                    binding.chatRecycler.smoothScrollToPosition(messages.size() - 1);
                 }
                 binding.chatRecycler.setVisibility(View.VISIBLE);
             }
@@ -153,6 +160,53 @@ public class ChatActivity extends BaseActivity {
             if(conversationId == null){
                 checkForConversation();
             }
+        }
+    };
+
+    private void sendNotification(String userId, String name, String text){
+        new Thread(()->{
+            try {
+                InputStream serviceAccountStream = getResources().openRawResource(JsonKey.jsonKey);
+                GoogleCredentials credentials = GoogleCredentials
+                        .fromStream(serviceAccountStream)
+                        .createScoped(Collections.singleton(Constants.SCOPE));
+                credentials.refreshIfExpired();
+                accessToken = credentials.getAccessToken().getTokenValue();
+                getNotificationToken(userId,name,text);
+
+            } catch (Exception e){
+                //This is the error origin
+                Log.d("Notification error",e.getMessage());
+            }
+        }).start();
+    }
+
+    private void getNotificationToken(String userId, String name, String text){
+        FirebaseFirestore.getInstance()
+                .collection(Constants.KEY_COLLECTION_USERS)
+                .document(userId)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    String targetToken = documentSnapshot.getString(Constants.KEY_FCM_TOKEN);
+                    if (targetToken != null) {
+                        manager.sendMessage(fcmListener,targetToken,accessToken,name,text);
+                    } else {
+                        showToasts("Target token not found!");
+                    }
+                })
+                .addOnFailureListener(e->{
+                    showToasts(e.getMessage());
+                });
+    }
+
+    private final FCMListener fcmListener = new FCMListener() {
+        @Override
+        public void unSuccess(FCMResponse response, String message) {
+        }
+
+        @Override
+        public void onFailed(String message) {
+            Toast.makeText(ChatActivity.this, message, Toast.LENGTH_SHORT).show();
         }
     };
 
@@ -226,65 +280,22 @@ public class ChatActivity extends BaseActivity {
                             value.getLong(Constants.KEY_AVAILABILITY)
                     ).intValue();
                     isReceiverAvailable = availability == 1;
+                    lastOnline = value.getString(Constants.LAST_ONLINE);
                 }
                 receiver.token = value.getString(Constants.KEY_FCM_TOKEN);
             }
             if (isReceiverAvailable){
                 binding.chatAvailability.setVisibility(View.VISIBLE);
+                binding.chatAvailability.setText("Online");
             } else {
-                binding.chatAvailability.setVisibility(View.GONE);
+                if (lastOnline == null){
+                    binding.chatAvailability.setVisibility(View.GONE);
+                } else {
+                    binding.chatAvailability.setText("Last seen on "+lastOnline);
+                }
             }
         });
     }
-
-    private void sendNotification(String userId, String name, String text){
-        new Thread(()->{
-            try {
-                InputStream serviceAccountStream = getResources().openRawResource(R.raw.service_account);
-                GoogleCredentials credentials = GoogleCredentials
-                        .fromStream(serviceAccountStream)
-                        .createScoped(Collections.singleton(Constants.SCOPE));
-                credentials.refreshIfExpired();
-                accessToken = credentials.getAccessToken().getTokenValue();
-                getNotificationToken(userId,name,text);
-
-            } catch (Exception e){
-                showToasts(e.getMessage());
-            }
-        }).start();
-    }
-
-
-
-
-    private void getNotificationToken(String userId, String name, String text){
-        FirebaseFirestore.getInstance()
-                .collection(Constants.KEY_COLLECTION_USERS)
-                .document(userId)
-                .get()
-                .addOnSuccessListener(documentSnapshot -> {
-                    String targetToken = documentSnapshot.getString(Constants.KEY_FCM_TOKEN);
-                    if (targetToken != null) {
-                        manager.sendMessage(fcmListener,targetToken,accessToken,name,text);
-                    } else {
-                        showToasts("Target token not found!");
-                    }
-                })
-                .addOnFailureListener(e->{
-                    showToasts(e.getMessage());
-                });
-    }
-
-    private final FCMListener fcmListener = new FCMListener() {
-        @Override
-        public void unSuccess(FCMResponse response, String message) {
-        }
-
-        @Override
-        public void onFailed(String message) {
-            Toast.makeText(ChatActivity.this, message, Toast.LENGTH_SHORT).show();
-        }
-    };
 
     private void loadReceiverDetails() {
         receiver = (User) getIntent().getSerializableExtra(Constants.KEY_USER);
@@ -302,12 +313,23 @@ public class ChatActivity extends BaseActivity {
     }
 
     private String getReadableTime(Date date){
-        return new SimpleDateFormat("MMMM dd, yyyy - hh:mm a", Locale.getDefault()).format(date);
+        return new SimpleDateFormat("MMM dd, HH:mm", Locale.getDefault()).format(date);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         listenReceiverAvailability();
+        if (!messages.isEmpty()) {
+            adapter.setMessages(messages);
+            binding.chatRecycler.smoothScrollToPosition(messages.size() - 1);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        startActivity(intent);
     }
 }

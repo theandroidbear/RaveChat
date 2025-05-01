@@ -22,6 +22,7 @@ import com.ravemaster.ravechat.utilities.Constants;
 import com.ravemaster.ravechat.utilities.PreferenceManager;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class UsersActivity extends BaseActivity {
@@ -43,9 +44,7 @@ public class UsersActivity extends BaseActivity {
         getUsers();
 
         binding.friendsToolBar.setNavigationOnClickListener(v->{
-            Intent intent = new Intent(UsersActivity.this,MainActivity.class);
-            startActivity(intent);
-            finish();
+            onBackPressed();
         });
     }
 
@@ -83,6 +82,7 @@ public class UsersActivity extends BaseActivity {
     }
 
     private void showUsers(List<User> userList) {
+        Collections.sort(userList,(obj1,obj2)->obj1.name.compareTo(obj2.name));
         binding.usersRecycler.setVisibility(View.VISIBLE);
         adapter.setUsersList(userList);
         binding.usersRecycler.setAdapter(adapter);

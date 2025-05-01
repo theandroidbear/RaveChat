@@ -10,6 +10,10 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.ravemaster.ravechat.utilities.Constants;
 import com.ravemaster.ravechat.utilities.PreferenceManager;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 public class BaseActivity extends AppCompatActivity {
 
     DocumentReference documentReference;
@@ -41,6 +45,7 @@ public class BaseActivity extends AppCompatActivity {
         super.onPause();
         if (isOnline){
             documentReference.update(Constants.KEY_AVAILABILITY,0);
+            documentReference.update(Constants.LAST_ONLINE,getReadableTime(new Date()));
             isOnline = false;
         }
     }
@@ -59,7 +64,12 @@ public class BaseActivity extends AppCompatActivity {
         super.onStop();
         if (isOnline){
             documentReference.update(Constants.KEY_AVAILABILITY,0);
+            documentReference.update(Constants.LAST_ONLINE,getReadableTime(new Date()));
             isOnline = false;
         }
+    }
+
+    private String getReadableTime(Date date){
+        return new SimpleDateFormat("MMM dd, HH:mm", Locale.getDefault()).format(date);
     }
 }

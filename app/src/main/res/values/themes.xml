@@ -54,15 +54,26 @@
         <item name="fontFamily">@font/my_fonts</item>
         <item name="android:fontFamily">@font/my_fonts</item>
 
+        <item name="toolbarStyle">@style/Widget.App.Toolbar</item>
+
     </style>
 
     <style name="Widget.App.Toolbar" parent="Widget.Material3.Toolbar">
         <item name="titleTextAppearance">@style/TextAppearance.App.TitleLarge</item>
     </style>
 
-    <style name="TextAppearance.App.TitleLarge" parent="TextAppearance.Material3.TitleLarge">
+    <style name="CollapsedToolbarTitle" parent="TextAppearance.Material3.TitleLarge">
         <item name="android:textStyle">bold</item>
         <item name="font">@font/open_sans_regular</item>
+        <item name="android:textColor">?attr/colorPrimary</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="ExpandedToolbarTitle" parent="TextAppearance.Design.CollapsingToolbar.Expanded">
+        <item name="android:textSize">28sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="font">@font/open_sans_regular</item>
+        <item name="android:textColor">?attr/colorPrimary</item>
     </style>
 
     <style name="Theme.RaveChat" parent="Base.Theme.RaveChat" />

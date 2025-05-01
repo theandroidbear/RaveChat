@@ -32,35 +32,49 @@
         </RelativeLayout>
     </com.google.android.material.card.MaterialCardView>
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_toEndOf="@id/recentImageCardView"
-        android:layout_centerInParent="true">
+        android:layout_centerVertical="true"
+        android:id="@+id/recentLayout">
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/convoName"
             android:text="This is a sample user name"
-            android:textSize="16sp"
+            android:textSize="18sp"
             android:textStyle="bold"
             android:layout_marginBottom="5dp"
-            android:layout_marginStart="20dp"
-            />
+            android:layout_marginStart="5dp"
+            android:singleLine="true"
+            android:ellipsize="end"
+            android:layout_alignParentTop="true"/>
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/convoMessage"
             android:text="This is a sample user name"
-            android:layout_marginBottom="5dp"
-            android:layout_marginStart="20dp"
+            android:layout_marginStart="5dp"
             android:layout_marginEnd="20dp"
             android:singleLine="true"
-            android:ellipsize="end"/>
+            android:ellipsize="end"
+            android:textSize="13sp"
+            android:layout_marginBottom="5dp"
+            android:layout_below="@id/convoName"/>
 
-    </LinearLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="chat time"
+            android:layout_marginEnd="10dp"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="4dp"
+            android:textSize="12sp"
+            android:id="@+id/textTime"
+            android:layout_alignParentEnd="true"/>
 
-
+    </RelativeLayout>
 
 </RelativeLayout>

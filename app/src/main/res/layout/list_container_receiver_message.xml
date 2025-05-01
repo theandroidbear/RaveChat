@@ -24,7 +24,7 @@
         android:layout_gravity="start"
         android:layout_margin="5dp"
         android:text="12:09 AM"
-        android:textColor="?attr/colorPrimary"
-        android:id="@+id/receiverTime"/>
+        android:id="@+id/receiverTime"
+        android:textSize="12sp"/>
 
 </LinearLayout>
