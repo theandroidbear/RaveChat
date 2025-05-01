@@ -25,7 +25,6 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.ravemaster.ravechat.R;
 import com.ravemaster.ravechat.adapters.ChatAdapter;
 import com.ravemaster.ravechat.api.RequestManager;
 import com.ravemaster.ravechat.api.interfaces.FCMListener;
@@ -34,7 +33,7 @@ import com.ravemaster.ravechat.databinding.ActivityChatBinding;
 import com.ravemaster.ravechat.models.ChatMessage;
 import com.ravemaster.ravechat.models.User;
 import com.ravemaster.ravechat.utilities.Constants;
-import com.ravemaster.ravechat.utilities.JsonKey;
+import com.ravemaster.ravechat.json.JsonKey;
 import com.ravemaster.ravechat.utilities.PreferenceManager;
 
 import java.io.InputStream;
