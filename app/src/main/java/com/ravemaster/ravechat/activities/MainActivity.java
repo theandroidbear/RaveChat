@@ -183,6 +183,7 @@ public class MainActivity extends BaseActivity {
         if (id == R.id.myAccount) {
             Intent intent = new Intent(this, ProfileActivity.class);
             startActivity(intent);
+            finish();
             return true;
         } else if (id == R.id.logOut) {
             signOut();
