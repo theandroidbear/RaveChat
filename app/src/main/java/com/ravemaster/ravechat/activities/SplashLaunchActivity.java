@@ -20,7 +20,6 @@ public class SplashLaunchActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         SplashScreen.installSplashScreen(this);
         setContentView(R.layout.activity_splash_launch);
         PreferenceManager preferenceManager = new PreferenceManager(this);

@@ -56,6 +56,11 @@
 
         <item name="toolbarStyle">@style/Widget.App.Toolbar</item>
 
+        <item name="android:statusBarColor">@color/light_theme_surface</item>
+        <item name="android:navigationBarColor">@color/light_theme_surface</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightNavigationBar">true</item>
+
     </style>
 
     <style name="Widget.App.Toolbar" parent="Widget.Material3.Toolbar">
